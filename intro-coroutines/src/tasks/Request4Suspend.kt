@@ -6,11 +6,10 @@ suspend fun loadContributorsSuspend(service: GitHubService, req: RequestData): L
     val repos = service
         .getOrgRepos(req.org)
         .also { logRepos(req, it) }
-        .body() ?: emptyList()
+        .bodyList()
 
     return repos.flatMap { repo ->
-        service
-            .getRepoContributors(req.org, repo.name)
+        service.getRepoContributors(req.org, repo.name)
             .also { logUsers(repo, it) }
             .bodyList()
     }.aggregate()
